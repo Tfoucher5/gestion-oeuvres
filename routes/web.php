@@ -5,9 +5,7 @@ use App\Http\Controllers\OeuvreController;
 use App\Http\Controllers\VenteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [OeuvreController::class, 'accueil'])->name('welcome');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

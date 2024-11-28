@@ -157,4 +157,11 @@ class OeuvreController extends Controller
         // Retourner le fichier avec le bon type MIME
         return response()->file($path);
     }
+
+    public function accueil(){
+        $oeuvres = Oeuvre::all();
+
+        return view('welcome', compact('oeuvres'));$oeuvres = Oeuvre::latest()->take(6)->get(); // Les 6 œuvres les plus récentes
+        return view('welcome', compact('oeuvres'));
+    }
 }
