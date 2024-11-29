@@ -62,6 +62,7 @@ class OeuvreVenduNotification extends Notification
             'oeuvre_id' => $this->oeuvre->id,
             'oeuvre_nom' => $this->oeuvre->nom,
             'prix_vente' => $this->prixVente,
+            'message' => 'Votre œuvre "' . $this->oeuvre->nom . '" a été Vendue pour' . $this->prixVente .'€'
         ];
     }
 

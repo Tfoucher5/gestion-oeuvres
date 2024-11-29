@@ -19,17 +19,17 @@
         <a href="{{ route('oeuvres.create') }}" class="btn btn-primary mb-3">Ajouter une œuvre</a>
     @endif
 
-    <table class="table table-striped">
+    <table id="oeuvresTable" class="table table-striped">
         <thead>
             <tr>
-                <th>Nom</th>
-                <th>Descriptif</th>
-                <th>Année</th>
-                <th>Catégorie</th>
-                <th>Époque</th>
-                <th>Prix</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th class="text-center">Nom</th>
+                <th class="text-center">Descriptif</th>
+                <th class="text-center">Année</th>
+                <th class="text-center">Catégorie</th>
+                <th class="text-center">Époque</th>
+                <th class="text-center">Prix</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -45,16 +45,16 @@
                         @if($oeuvre->status == 'disponible')
                             <span class="badge bg-success">Disponible</span>
                         @elseif ($oeuvre->status == 'en_vente')
-                            <span class="badge bg-warning">En Vente  </span>
+                            <span class="badge bg-warning">En Vente</span>
                         @else
                             <span class="badge bg-danger">Vendue</span>
                         @endif
                     </td>
-                    <td class="d-flex justify-content-start">
+                    <td class="text-center">
                         <a href="{{ route('oeuvres.show', $oeuvre->id) }}" class="btn btn-info btn-sm me-2">
                             <i class="fas fa-eye"></i> Voir
                         </a>
-                        @if(auth()->user()->isA('proprietaire'))
+                        @if(auth()->user()->isA('proprietaire') && ($oeuvre->status != 'vendue'))
                             <a href="{{ route('oeuvres.edit', $oeuvre->id) }}" class="btn btn-warning btn-sm me-2">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
