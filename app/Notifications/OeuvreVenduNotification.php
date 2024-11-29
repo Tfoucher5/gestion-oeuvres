@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -32,7 +31,7 @@ class OeuvreVenduNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail']; // La notification sera envoyée par email
+        return ['mail', 'database']; // La notification sera envoyée par email et stockée dans la base de données
     }
 
     /**
@@ -49,5 +48,35 @@ class OeuvreVenduNotification extends Notification
             ->line("Votre œuvre intitulée **{$this->oeuvre->nom}** a été vendue.")
             ->line("Prix de vente : **{$this->prixVente} €**.")
             ->line('Merci de nous faire confiance.');
+    }
+
+    /**
+     * Get the database representation of the notification.
+     *
+     * @param mixed $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {
+        return [
+            'oeuvre_id' => $this->oeuvre->id,
+            'oeuvre_nom' => $this->oeuvre->nom,
+            'prix_vente' => $this->prixVente,
+        ];
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param mixed $notifiable
+     * @return array
+     */
+    public function toArray($notifiable)
+    {
+        return [
+            'oeuvre_id' => $this->oeuvre->id,
+            'oeuvre_nom' => $this->oeuvre->nom,
+            'prix_vente' => $this->prixVente,
+        ];
     }
 }

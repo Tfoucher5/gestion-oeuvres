@@ -46,14 +46,14 @@
                                 <td class="text-end">{{ number_format($vente->montant_total, 2, ',', ' ') }}</td>
                                 <td class="text-end">{{ number_format($vente->commission, 2, ',', ' ') }}</td>
                                 <td class="text-center">
-                                    <span class="badge bg-{{ $vente->statut === 'terminée' ? 'success' : ($vente->statut === 'en cours' ? 'warning' : 'secondary') }}">
+                                    <span class="badge bg-{{ $vente->statut === 'terminee' ? 'secondary' : ($vente->statut === 'en_cours' ? 'success' : 'secondary') }}">
                                         {{ ucfirst($vente->statut) }}
                                     </span>
                                 </td>
                                 <td class="text-center">
                                 @if ( $vente->statut != 'terminee')
                                     <a href="{{ route('ventes.edit', $vente) }}" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i> Modifier
+                                        <i class="fas fa-edit"></i> Cloturer
                                     </a>
                                     <form action="{{ route('ventes.destroy', $vente) }}" method="POST" class="d-inline">
                                         @csrf
@@ -62,6 +62,8 @@
                                             <i class="fas fa-trash"></i> Supprimer
                                         </button>
                                     </form>
+                                @else
+                                    <p>Vente terminée</p>
                                 @endif
                                 </td>
                             </tr>

@@ -50,7 +50,8 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-success">Mettre à jour la vente</button>
+                <button type="submit" class="btn btn-success">Cloturer la vente</button>
+                <a href="{{ route('ventes.index') }}" class="btn btn-secondary">Retour</a>
             </div>
         </form>
     </div>

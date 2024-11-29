@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Oeuvre;
+use App\Models\OeuvreVente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Silber\Bouncer\BouncerFacade as Bouncer;
+use App\Notifications\AnnulerVenteOeuvreNotification;
 
 class OeuvreController extends Controller
 {
@@ -130,9 +132,27 @@ class OeuvreController extends Controller
         return redirect()->route('oeuvres.index')->with('success', 'Œuvre mise à jour avec succès.');
     }
 
-    // Supprimer une œuvre
     public function destroy(Oeuvre $oeuvre)
     {
+        // Vérifier si l'œuvre est utilisée dans une vente
+        $venteExistante = OeuvreVente::where('oeuvre_id', $oeuvre->id)->exists();
+
+        if ($venteExistante) {
+            // Si la confirmation d'envoi d'email est demandée
+            if (request()->has('send_notification') && request()->send_notification == 'yes') {
+                // Envoyer une notification au commissaire-priseur
+                $commissaire = User::whereIs('commissaire-priseur')->first(); // Supposons qu'il y ait un rôle 'commissaire-priseur'
+                if ($commissaire) {
+                    $commissaire->notify(new AnnulerVenteOeuvreNotification($oeuvre));
+                }
+                // Retourner un message de succès
+                return redirect()->route('oeuvres.index')->with('success', 'Une notification a été envoyée au commissaire-priseur.');
+            }
+
+            // Si la confirmation n'a pas été donnée, afficher la page de confirmation
+            return view('oeuvres.confirm-delete', compact('oeuvre'));
+        }
+
         // Supprimer la photo si elle existe
         if ($oeuvre->photo) {
             \Storage::delete($oeuvre->photo);
@@ -143,6 +163,7 @@ class OeuvreController extends Controller
 
         return redirect()->route('oeuvres.index')->with('success', 'Œuvre supprimée avec succès.');
     }
+
 
     public function showPrivateImage($filename)
     {

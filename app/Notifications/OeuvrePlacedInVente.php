@@ -25,7 +25,7 @@ class OeuvrePlacedInVente extends Notification
     // Définir le canal de notification (mail, base de données, etc.)
     public function via($notifiable)
     {
-        return ['mail']; // Envoyer par email et enregistrer en base
+        return ['mail', 'database']; // Envoyer par email et enregistrer en base
     }
 
     // Format du mail
@@ -47,7 +47,16 @@ class OeuvrePlacedInVente extends Notification
         return [
             'oeuvre_id' => $this->oeuvre->id,
             'vente_id' => $this->vente->id,
-            'message' => 'Votre œuvre "' . $this->oeuvre->titre . '" a été ajoutée à la vente "' . $this->vente->lieu . '".'
+            'message' => 'Votre œuvre "' . $this->oeuvre->nom . '" a été ajoutée à la vente "' . $this->vente->lieu . '".'
+        ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return [
+            'oeuvre_id' => $this->oeuvre->id,
+            'vente_id' => $this->vente->id,
+            'message' => 'Votre œuvre "' . $this->oeuvre->nom . '" a été ajoutée à la vente "' . $this->vente->lieu . '".'
         ];
     }
 }

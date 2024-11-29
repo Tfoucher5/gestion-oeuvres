@@ -1,45 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1 class="mb-4">Liste des Œuvres</h1>
+<div class="container">
+    <h1 class="mb-4">Liste des Œuvres</h1>
 
-        <!-- Ajouter une œuvre -->
+    <!-- Affichage des messages flash -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @elseif(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if(auth()->user()->isA('proprietaire'))
         <a href="{{ route('oeuvres.create') }}" class="btn btn-primary mb-3">Ajouter une œuvre</a>
+    @endif
 
-        <table class="table table-striped">
-            <thead>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Descriptif</th>
+                <th>Année</th>
+                <th>Catégorie</th>
+                <th>Époque</th>
+                <th>Prix</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($oeuvres as $oeuvre)
                 <tr>
-                    <th>Nom</th>
-                    <th>Descriptif</th>
-                    <th>Année</th>
-                    <th>Catégorie</th>
-                    <th>Époque</th>
-                    <th>Prix</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($oeuvres as $oeuvre)
-                    <tr>
-                        <td>{{ $oeuvre->nom }}</td>
-                        <td>{{ $oeuvre->descriptif }}</td>
-                        <td>{{ $oeuvre->annee_creation }}</td>
-                        <td>{{ $oeuvre->categorie }}</td>
-                        <td>{{ $oeuvre->epoque }}</td>
-                        <td>{{ number_format($oeuvre->valeur, 2, ',', ' ') }} €</td>
-                        <td>
-                            @if($oeuvre->status)
-                                <span class="badge bg-success">Disponible</span>
-                            @else
-                                <span class="badge bg-danger">Indisponible</span>
-                            @endif
-                        </td>
-                        <td class="d-flex justify-content-start">
-                            <a href="{{ route('oeuvres.show', $oeuvre->id) }}" class="btn btn-info btn-sm me-2">
-                                <i class="fas fa-eye"></i> Voir
-                            </a>
+                    <td>{{ $oeuvre->nom }}</td>
+                    <td>{{ $oeuvre->descriptif }}</td>
+                    <td>{{ $oeuvre->annee_creation }}</td>
+                    <td>{{ $oeuvre->categorie }}</td>
+                    <td>{{ $oeuvre->epoque }}</td>
+                    <td>{{ number_format($oeuvre->valeur, 2, ',', ' ') }} €</td>
+                    <td>
+                        @if($oeuvre->status == 'disponible')
+                            <span class="badge bg-success">Disponible</span>
+                        @elseif ($oeuvre->status == 'en_vente')
+                            <span class="badge bg-warning">En Vente  </span>
+                        @else
+                            <span class="badge bg-danger">Vendue</span>
+                        @endif
+                    </td>
+                    <td class="d-flex justify-content-start">
+                        <a href="{{ route('oeuvres.show', $oeuvre->id) }}" class="btn btn-info btn-sm me-2">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                        @if(auth()->user()->isA('proprietaire'))
                             <a href="{{ route('oeuvres.edit', $oeuvre->id) }}" class="btn btn-warning btn-sm me-2">
                                 <i class="fas fa-edit"></i> Modifier
                             </a>
@@ -51,10 +66,11 @@
                                     <i class="fas fa-trash"></i> Supprimer
                                 </button>
                             </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 @endsection
